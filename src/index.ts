@@ -1,4 +1,5 @@
 import { Env, fromEnv } from "./config";
+import { handler } from "./http";
 
 
 export default {
@@ -9,7 +10,7 @@ export default {
 	): Promise<Response> {
 		const config = fromEnv(env);
 
-		return new Response(`Hello ${config.awesomeSecret}!`);
+		return handler(request, config);
 	},
 };
 
