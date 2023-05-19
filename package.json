@@ -12,6 +12,7 @@
     "deploy": "wrangler publish"
   },
   "dependencies": {
+    "@octokit/core": "^4.2.1",
     "uuid": "^9.0.0"
   }
 }
