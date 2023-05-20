@@ -1,23 +1,21 @@
 import { type RequestParameters } from "@octokit/types/dist-types";
 import { GitHubAction } from "./github-action";
 
-const action_owner: string = "ukoreh"
-const action_repo: string = "actions"
-const action_workflow_id: string = "fork-clone-build-deploy.yaml"
-const action_ref_branch: string = "master"
-const fork_org: string = "expensive-garbage"
-
 export class ForkCloneBuildDeployAction extends GitHubAction {
+	constructor(private readonly forkOrg: string, private readonly actionRepoOwner: string, private readonly actionRepoName: string, private readonly actionWorkflowId: string, private readonly actionRefBranch: string) {
+        super();
+    }
+
     protected createWorkflowDispatchParameters(owner: string, repo: string, run_id: string): { owner: string; repo: string; workflow_id: string | number; } & { ref: string; inputs?: { [key: string]: unknown; } | undefined; } & RequestParameters {
         return {
-            owner: action_owner,
-            repo: action_repo,
-            workflow_id: action_workflow_id,
-            ref: action_ref_branch,
+            owner: this.actionRepoOwner,
+            repo: this.actionRepoName,
+            workflow_id: this.actionWorkflowId,
+            ref: this.actionRefBranch,
             inputs: {
                 'owner': owner,
                 'repo': repo,
-                'fork-org': fork_org,
+                'fork-org': this.forkOrg,
                 'run-id': run_id
             },
             headers: {
