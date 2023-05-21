@@ -26,6 +26,10 @@ export class ForkCloneBuildDeployAction extends GitHubAction {
         return new Error("Not able to find the Workflow Run");
     }
 
+    getDeployUrl(owner: string, repo: string): string {
+        return `https://${this.forkOrg}.github.io/${owner}-${repo}`;
+    }
+
     protected createWorkflowDispatchParameters(owner: string, repo: string, stepId: string): { owner: string; repo: string; workflow_id: string | number; } & { ref: string; inputs?: { [key: string]: unknown; } | undefined; } & RequestParameters {
         return {
             owner: this.actionRepoOwner,

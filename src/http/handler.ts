@@ -2,12 +2,13 @@ import { Config } from "../config";
 import guid from "../data/guid";
 import { ForkCloneBuildDeployAction } from "../data";
 import { requestToGitHubRepository } from "../data";
+import { BadRequest, WorkflowInit, InternalServerError } from "./response";
 
 export default async function (req: Request, config: Config): Promise<Response> {
     const githubRepo = requestToGitHubRepository(req);
     
     if(githubRepo instanceof Error){
-        return Promise.resolve(new Response(`Erro ${githubRepo.message}`));
+        return Promise.resolve(new BadRequest(githubRepo.message).toResponse());
     }
 
     const jobStepRunId = guid();
@@ -21,10 +22,15 @@ export default async function (req: Request, config: Config): Promise<Response> 
     const workflow = await action.getWorkflowRun(jobStepRunId);
     
     if(workflow instanceof Error){
-        return Promise.resolve(new Response(`Erro ${workflow.message}`));
+        return Promise.resolve(new InternalServerError(workflow.message).toResponse());
     }
 
-    return Promise.resolve(new Response(`The generated guid is ${jobStepRunId}`));
+    const response = <WorkflowInit>{
+        runUrl: workflow,
+        deployUrl: action.getDeployUrl(githubRepo.owner, githubRepo.name),
+    };
+
+    return Promise.resolve(Response.json(response));
 }
 
 function sleep(ms: number) {
