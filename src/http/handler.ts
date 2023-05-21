@@ -10,11 +10,23 @@ export default async function (req: Request, config: Config): Promise<Response> 
         return Promise.resolve(new Response(`Erro ${githubRepo.message}`));
     }
 
-    const jobRunId = guid();
+    const jobStepRunId = guid();
     
-    new ForkCloneBuildDeployAction(config.forkOrg, config.actionRepoOwner, config.actionRepoName, config.actionWorkflowId, config.actionRefBranch).createWorkflowDispatch(config.githubToken, githubRepo.owner, githubRepo.name, jobRunId)
+    const action = new ForkCloneBuildDeployAction(config.githubToken, config.forkOrg, config.actionRepoOwner, config.actionRepoName, config.actionWorkflowId, config.actionRefBranch);
 
-    // get work flow id
+    action.createWorkflowDispatch(githubRepo.owner, githubRepo.name, jobStepRunId);
 
-    return Promise.resolve(new Response(`The generated guid is ${jobRunId}`));
+    await sleep(15000);
+
+    const workflow = await action.getWorkflowRun(jobStepRunId);
+    
+    if(workflow instanceof Error){
+        return Promise.resolve(new Response(`Erro ${workflow.message}`));
+    }
+
+    return Promise.resolve(new Response(`The generated guid is ${jobStepRunId}`));
+}
+
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
