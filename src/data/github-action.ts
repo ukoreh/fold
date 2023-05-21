@@ -4,6 +4,7 @@ import { Octokit } from "@octokit/core";
 export interface IGitHubAction{
     createWorkflowDispatch(owner: string, repo: string, stepId: string): void;
     getWorkflowRun(stepId: string): Promise<WorkflowRunURL | Error>;
+    getDeployUrl(owner: string, repo: string): string;
 }
 
 export abstract class GitHubAction implements IGitHubAction {
@@ -20,6 +21,8 @@ export abstract class GitHubAction implements IGitHubAction {
     }
     
     abstract getWorkflowRun(stepId: string): Promise<WorkflowRunURL | Error>;
+
+    abstract getDeployUrl(owner: string, repo: string): string;
 
     protected abstract createWorkflowDispatchParameters(owner: string, repo: string, stepId: string): { owner: string; repo: string; workflow_id: string | number; } & { ref: string; inputs?: { [key: string]: unknown; } | undefined; } & RequestParameters
 }
