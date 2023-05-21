@@ -2,9 +2,13 @@ import { Config } from "../config";
 import guid from "../data/guid";
 import { ForkCloneBuildDeployAction } from "../data";
 import { requestToGitHubRepository } from "../data";
-import { BadRequest, WorkflowInit, InternalServerError } from "./response";
+import { BadRequest, WorkflowInit, InternalServerError, corsResponse } from "./response";
 
 export default async function (req: Request, config: Config): Promise<Response> {
+    if (req.method === 'OPTIONS') {
+        return Promise.resolve(corsResponse(req));
+    }
+
     const githubRepo = requestToGitHubRepository(req);
     
     if(githubRepo instanceof Error){
@@ -30,7 +34,12 @@ export default async function (req: Request, config: Config): Promise<Response> 
         deployUrl: action.getDeployUrl(githubRepo.owner, githubRepo.name),
     };
 
-    return Promise.resolve(Response.json(response));
+    return Promise.resolve(Response.json(response, {
+        headers: {
+            'access-control-expose-headers': '*',
+            'Access-Control-Allow-Origin': '*'
+        }
+    }));
 }
 
 function sleep(ms: number) {
