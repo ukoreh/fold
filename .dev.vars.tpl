@@ -1,0 +1,6 @@
+GITHUB_TOKEN=''
+FORK_ORG='expensive-garbage'
+ACTION_REPO_OWNER='ukoreh'
+ACTION_REPO_NAME='actions'
+ACTION_WORKFLOW_ID='fork-clone-build-deploy.yaml'
+ACTION_REF_BRANCH='master'
