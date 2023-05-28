@@ -17,7 +17,7 @@ Run the local server via `npm run start`
 Setup worker environment variables with the following one-line:
 
 ```bash
-IFS='='; ENV_FILE=.dev.vars; cat $ENV_FILE | while read line || [[ -n $line ]]; do read -ra envy <<< $line; wrangler secret put ${envy[0]} <<< ${envy[1]} ; done
+IFS='='; ENV_FILE=.dev.vars; cat $ENV_FILE | while read line || [[ -n $line ]]; do read -ra envy <<< $line; wrangler secret put ${envy[0]} <<< ${envy[1]}; done
 ```
 
 Deploy to Cloudflare via `npm run deploy`
