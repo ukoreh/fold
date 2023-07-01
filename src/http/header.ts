@@ -3,7 +3,7 @@ const jobId = 'x-job-id'
 const downloadLogs = 'x-download-logs'
 
 export function extractRepoUrl(headers: Headers): string | null {
-    return headers.get(repoUrl);
+    return headers.get(repoUrl)?.split(/\.git$/g)[0] || null;
 }
 
 export function extractJobId(headers: Headers): string | null {
